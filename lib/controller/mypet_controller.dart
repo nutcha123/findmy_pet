@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:project/components/dialog/custom_dialog.dart';
@@ -16,14 +17,17 @@ class MyPetController extends GetxController {
   Future<void> createNewPet({required Pet myPet}) async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
+        
     final String accessToken = sharedPreferences.getString('accessToken')!;
+    final String user_id = sharedPreferences.getString('user_id')!;
+    // Create New Pet to USER > OWN PET > USER ID 
     try {
       await FirebaseFirestore.instance
           .collection('user')
-          .doc(accessToken)
-          .collection('pet')
+          .doc('owned_pet')
+          .collection(user_id)
           .add(myPet.toJson());
-      print('ok');
+      
     } catch (err) {
       print(err);
     }
@@ -32,12 +36,17 @@ class MyPetController extends GetxController {
   Future<void> findAllMyPet() async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    final String accessToken = sharedPreferences.getString('accessToken')!;
+    // final String accessToken = sharedPreferences.getString('accessToken')!;
+    final String user_id = sharedPreferences.getString('user_id')!;
     try {
+
+      EasyLoading.show(status: 'Get All My Pet');
+
+      // GET ALL DATA FROM USER > OWNED PET FROM FIREBASE
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('user')
-          .doc(accessToken)
-          .collection('pet')
+          .doc('owned_pet')
+          .collection(user_id)
           .get();
 
       final List response = snapshot.docs.map((doc) {
@@ -49,7 +58,11 @@ class MyPetController extends GetxController {
       petReactiveList.value = mypet_list;
 
       print('find all');
+      print(mypet_list);
+
+      EasyLoading.dismiss();
     } catch (error) {
+      EasyLoading.dismiss();
       print(error);
       petReactiveList.value = [];
     }
@@ -59,12 +72,13 @@ class MyPetController extends GetxController {
     print('delete');
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
-    final String accessToken = sharedPreferences.getString('accessToken')!;
+    // final String accessToken = sharedPreferences.getString('accessToken')!;
+    final String user_id = sharedPreferences.getString('user_id')!;
 
     final Query query = await FirebaseFirestore.instance
         .collection('user')
-        .doc(accessToken)
-        .collection('pet')
+        .doc('owned_pet')
+        .collection(user_id)
         .where('petId', isEqualTo: petId);
 
     final QuerySnapshot data = await query.get();
@@ -74,8 +88,8 @@ class MyPetController extends GetxController {
 
     await FirebaseFirestore.instance
         .collection('user')
-        .doc(accessToken)
-        .collection('pet')
+        .doc('owned_pet')
+        .collection(user_id)
         .doc(doc_id.first)
         .delete();
     findAllMyPet();
@@ -87,12 +101,7 @@ class MyPetController extends GetxController {
       barrierDismissible: true,
       barrierLabel: '',
       pageBuilder: (context, _, __) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 20,
-            sigmaY: 20,
-          ),
-          child: CustomDialog(
+        return CustomDialog(
               child: Padding(
             padding: const EdgeInsets.all(25.0),
             child: Column(
@@ -143,15 +152,29 @@ class MyPetController extends GetxController {
                 ),
               ],
             ),
-          )),
-        );
+          ));
       },
     );
   }
+
+
 
   @override
   void onInit() {
     findAllMyPet();
     super.onInit();
   }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+
+    print('1');
+  }
+
+
+
+
+  
 }

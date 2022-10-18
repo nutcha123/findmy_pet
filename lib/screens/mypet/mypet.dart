@@ -11,6 +11,7 @@ class MyPet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MyPetController myPetController = Get.find<MyPetController>();
+    myPetController.findAllMyPet();
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(

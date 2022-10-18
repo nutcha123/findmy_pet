@@ -5,6 +5,7 @@ import 'package:project/controller/scanner_controller.dart';
 import 'package:project/controller/wrapper_controller.dart';
 
 void injectDependencies() {
+  //  sending variable to page
   Get.put(WrapperController());
   Get.put(ScannerController());
   Get.put(LoginController());

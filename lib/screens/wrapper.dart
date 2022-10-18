@@ -14,12 +14,14 @@ class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
   @override
   Widget build(BuildContext context) {
+    // Page List
     var pages = [Home(), Scanner(), MyPet(), Profile()];
+
+    // Use Wrapper Controller
     WrapperController wrapperController = Get.find<WrapperController>();
     return Scaffold(
-      body: Obx(() => IndexedStack(
-            children: pages,
-            index: wrapperController.navigatorIndex.value,
+      body: Obx(() => Container(
+            child: pages[wrapperController.navigatorIndex.value],
           )),
       bottomNavigationBar: ConvexAppBar(
         height: 60,

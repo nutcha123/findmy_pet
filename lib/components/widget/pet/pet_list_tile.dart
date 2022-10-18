@@ -1,4 +1,4 @@
-import 'dart:ui';
+
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +14,7 @@ class PetListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MyPetController myPetController  = Get.find<MyPetController>();
+    final MyPetController myPetController = Get.find<MyPetController>();
     return Container(
       child: Card(
         elevation: 0,
@@ -38,7 +38,8 @@ class PetListTile extends StatelessWidget {
                     GestureDetector(
                       child: Icon(Icons.close),
                       onTap: () {
-                        myPetController.showDeletePetDialog(context, pet.petId!);
+                        myPetController.showDeletePetDialog(
+                            context, pet.petId!);
                       },
                     )
                   ],
@@ -99,16 +100,22 @@ class PetListTile extends StatelessWidget {
                             barrierDismissible: true,
                             context: context,
                             pageBuilder: (context, _, __) {
-                              return BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 20,
-                                  sigmaY: 20,
-                                ),
-                                child: Dialog(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [QrImage(data: pet.petId!)],
-                                  ),
+                              return Dialog(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    QrImage(
+                                      data: pet.petId!,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text('${pet.petId!}'),
+
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
                                 ),
                               );
                             },
