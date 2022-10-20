@@ -1,6 +1,8 @@
 
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:project/controller/mypet_controller.dart';
@@ -64,10 +66,7 @@ class PetListTile extends StatelessWidget {
                       height: 30.w,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        child: Image.network(
-                          'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg/1200px-Cat_November_2010-1a.jpg',
-                          fit: BoxFit.cover,
-                        ),
+                        child: pet.imageUrl == null ? SpinKitCircle(color: Colors.blue,): Image.network(pet.imageUrl!,fit: BoxFit.cover),
                       )),
                   SizedBox(
                     width: 10,
@@ -87,7 +86,17 @@ class PetListTile extends StatelessWidget {
                 height: 25,
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Lost Mode'),
+                      CupertinoSwitch(value: false, onChanged: (value) {
+                        
+                      },),
+                    ],
+                  ),
                   Spacer(),
                   SizedBox(
                       width: 30.w,
@@ -105,16 +114,16 @@ class PetListTile extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     QrImage(
-                                      data: pet.petId!,
+                                      data: pet.token!,
                                     ),
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text('${pet.petId!}'),
+                                    // Text('${pet.token!}'),
 
-                                    SizedBox(
-                                      height: 5,
-                                    ),
+                                    // SizedBox(
+                                    //   height: 5,
+                                    // ),
                                   ],
                                 ),
                               );
