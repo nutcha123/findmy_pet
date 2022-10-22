@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -66,7 +64,11 @@ class PetListTile extends StatelessWidget {
                       height: 30.w,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
-                        child: pet.imageUrl == null ? SpinKitCircle(color: Colors.blue,): Image.network(pet.imageUrl!,fit: BoxFit.cover),
+                        child: pet.imageUrl == null
+                            ? SpinKitCircle(
+                                color: Colors.blue,
+                              )
+                            : Image.network(pet.imageUrl!, fit: BoxFit.cover),
                       )),
                   SizedBox(
                     width: 10,
@@ -92,9 +94,12 @@ class PetListTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Lost Mode'),
-                      CupertinoSwitch(value: false, onChanged: (value) {
-                        
-                      },),
+                      CupertinoSwitch(
+                        value: pet.isLost!,
+                        onChanged: (value) {
+                          myPetController.setLostStatus(value, id: pet.petId!);
+                        },
+                      ),
                     ],
                   ),
                   Spacer(),

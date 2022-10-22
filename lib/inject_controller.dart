@@ -7,7 +7,7 @@ import 'package:project/controller/wrapper_controller.dart';
 
 void injectDependencies()  {
   //  sending variable to page
-  FirebaseStorage.instanceFor(bucket: 'gs://findmypets-aa927.appspot.com/');
+  
   Get.put(WrapperController());
   Get.put(ScannerController());
   Get.put(LoginController());

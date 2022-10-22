@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "110614956249",
+    "project_id": "findmypets-aa927",
+    "storage_bucket": "findmypets-aa927.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110614956249:android:ff25a971e1ae6f989a96c8",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110614956249-fva9527si3ttn9kjs42br4tg18o73ipo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK1h2FNY6sOpxJ4dwI0U6P5ReM0o-W1As"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110614956249-fva9527si3ttn9kjs42br4tg18o73ipo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "110614956249-4m2hn87febkjpofundgubmhrrfj4k8ap.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.project"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

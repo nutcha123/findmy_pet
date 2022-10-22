@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -12,7 +15,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'screens/login/login.dart';
 
 void main() async {
-
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
@@ -26,11 +28,20 @@ void main() async {
     ..maskColor = Colors.blue.withOpacity(0.5)
     ..userInteractions = true
     ..dismissOnTap = false;
-    
-  WidgetsFlutterBinding.ensureInitialized();
-
   // connect Firebase
-  await Firebase.initializeApp();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: "AIzaSyB_pS6sHFKk96rLNcMEAo7YJUHJcuhVDsc",
+            appId: "1:110614956249:android:ff25a971e1ae6f989a96c8",
+            messagingSenderId: "110614956249",
+            projectId: "findmypets-aa927"));
+  } else {
+    await Firebase.initializeApp();
+  }
+  FirebaseStorage.instanceFor(bucket: 'gs://findmypets-aa927.appspot.com/');
   runApp(const MyApp());
 }
 
@@ -46,7 +57,6 @@ class MyApp extends StatelessWidget {
 
           // Use Flextheme
           theme: FlexThemeData.light(scheme: FlexScheme.blumineBlue).copyWith(
-
             textTheme: GoogleFonts.kanitTextTheme(),
           ),
           darkTheme: FlexThemeData.dark(scheme: FlexScheme.mandyRed),
@@ -55,7 +65,7 @@ class MyApp extends StatelessWidget {
 
           // Load accesstoken from storage
           home: !isAuth ? Login() : const Wrapper(),
-           builder: EasyLoading.init(),
+          builder: EasyLoading.init(),
         );
       },
     );

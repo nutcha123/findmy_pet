@@ -3,42 +3,81 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:project/components/dialog/custom_dialog.dart';
 import 'package:project/components/widget/custom_button.dart';
 import 'package:project/model/pet.dart';
+import 'package:project/screens/result/result_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class MyPetController extends GetxController {
+  late Pet searchResult;
   RxList<Pet> petReactiveList = RxList<Pet>([]);
 
   RxString currentImagePath = RxString('');
+
+  setLostStatus(bool status, {required String id}) async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+
+    final String user_id = sharedPreferences.getString('user_id')!;
+
+    final Query query = await FirebaseFirestore.instance
+        .collection('user')
+        .doc('owned_pet')
+        .collection(user_id)
+        .where('petId', isEqualTo: id);
+    final QuerySnapshot data = await query.get();
+
+    List doc_id = data.docs
+        .map((QueryDocumentSnapshot element) => element.reference.id)
+        .toList();
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc('owned_pet')
+        .collection(user_id)
+        .doc(doc_id.first)
+        .update({'isLost': status});
+    findAllMyPet();
+  }
 
   selectImage() async {
     XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
     currentImagePath.value = image!.path;
   }
 
-  Future<void> findPetByUserIdAndPetId(
-      {String user_id = "Gip7RvbuQmZtlqeMZPILFd1HSbB3",
-      String pet_id = "4404b470-4ef0-11ed-a9c5-33e736a2c538"}) async {
+  Future<bool> findPetByUserIdAndPetId(BuildContext context,
+      {required String token}) async {
+    print('toeken : $token');
+    final jwt = Jwt.parseJwt(token);
+    print('find');
     final Query query = await FirebaseFirestore.instance
         .collection('user')
         .doc('owned_pet')
-        .collection(user_id)
-        .where('petId', isEqualTo: pet_id)
+        .collection(jwt['user_id'])
+        .where('petId', isEqualTo: jwt['pet_id'])
         .where('isLost', isEqualTo: true);
     final QuerySnapshot snapshot = await query.get();
 
     if (snapshot.docs.length > 0) {
       print('found match data');
-      print(snapshot.docs.first.data());
+
+      final Map<String, dynamic> result =
+          snapshot.docs.first.data() as Map<String, dynamic>;
+
+      searchResult = Pet.fromJson(result);
+
+      return true;
     } else {
       print('mathed data not found');
+      return false;
     }
   }
 
@@ -201,6 +240,54 @@ class MyPetController extends GetxController {
                       child: CustomButton(
                         onPressed: () => Get.back<void>(),
                         child: Text('Cancel'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
+      },
+    );
+  }
+
+  showErrorDialog(BuildContext context, String title , {VoidCallback? callback}) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      pageBuilder: (context, _, __) {
+        return CustomDialog(
+            child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600, letterSpacing: 0.75),
+                ),
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                        onPressed: () {
+                          Get.back<void>();
+                          callback!();
+                        },
+                        child: Text('Back'),
                       ),
                     ),
                   ],
