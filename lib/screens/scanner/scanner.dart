@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/instance_manager.dart';
+
 import 'package:project/controller/mypet_controller.dart';
 import 'package:project/screens/result/result_page.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -17,101 +17,43 @@ class Scanner extends StatefulWidget {
 }
 
 class _ScannerState extends State<Scanner> {
+
+  String byPassToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiVmFpVUViOGRvSmRuVGd2YmdKVmt5bGZZb3l1MSIsInBldF9pZCI6Ijc2NzM4NTUwLTVmMmUtMTFlZC1iNzI5LWI3M2VkODYwYTc1NyIsImlhdCI6MTY2Nzg4ODg2N30.abtnSNHPy1ffXxwrEnue9oFr63M1cK4NYbXe5V7lxx4";
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
+ 
 
   @override
   void reassemble() {
     super.reassemble();
-    if (Platform.isAndroid) {
+    try {
+
+      if (Platform.isAndroid) {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();
+    } catch(err) {
+
+      print('error camera');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text('Scanner')),
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
-                              },
-                            )),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
-                            },
-                            child: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${describeEnum(snapshot.data!)}');
-                                } else {
-                                  return const Text('loading');
-                                }
-                              },
-                            )),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.resumeCamera();
-                          },
-                          child: const Text('resume',
-                              style: TextStyle(fontSize: 20)),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );
   }
 
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
+    
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
         ? 150.0
@@ -139,35 +81,73 @@ class _ScannerState extends State<Scanner> {
     controller.scannedDataStream.listen((scanData) async {
       if (scanData.code!.isNotEmpty) {
         controller.pauseCamera();
-
+//call api when found data
         final bool res = await myPetController.findPetByUserIdAndPetId(context,
             token: scanData.code.toString());
 
         if (res) {
-          print('complete');
-          Get.to<void>(ResultPage());
+          
+         await Get.to<void>(ResultPage(
+          token: scanData.code.toString(),
+            callback: () {
+              controller.resumeCamera();
+            },
+          ));
+          
+          
+
+
         } else {
           await myPetController.showErrorDialog(context, "Not Found",
               callback: () {
-                controller.resumeCamera();
-              });
+            controller.resumeCamera();
+          });
+          
         }
       }
+      
     });
+
+
+    
   }
 
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) async  {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
+      MyPetController myPetController = Get.find<MyPetController>();
+
+      final bool res = await myPetController.findPetByUserIdAndPetId(context,
+            token: byPassToken);
+
+        if (res) {
+          
+         await Get.to<void>(ResultPage(
+          token: byPassToken,
+            callback: () {
+              controller?.resumeCamera();
+            },
+          ));
+          
+  
+        } else {
+          await myPetController.showErrorDialog(context, "Not Found",
+              callback: () {
+            controller?.resumeCamera();
+          });
+          
+        }
+      
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('no Permission')),
       );
     }
+    
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    // controller?.dispose();
     super.dispose();
   }
 }

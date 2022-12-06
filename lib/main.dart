@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
           theme: FlexThemeData.light(scheme: FlexScheme.blumineBlue).copyWith(
             textTheme: GoogleFonts.kanitTextTheme(),
           ),
-          darkTheme: FlexThemeData.dark(scheme: FlexScheme.mandyRed),
+          
           themeMode: ThemeMode.system,
           title: 'Project II',
 

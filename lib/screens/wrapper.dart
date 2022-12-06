@@ -15,7 +15,7 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Page List
-    var pages = [Home(), Scanner(), MyPet(), Profile()];
+    var pages = [MyPet(), Scanner(), Profile()];
 
     // Use Wrapper Controller
     WrapperController wrapperController = Get.find<WrapperController>();
@@ -34,13 +34,12 @@ class Wrapper extends StatelessWidget {
         
         items: [
           TabItem(
-              isIconBlend: false,
               icon: Container(
-                child: Image.asset(
-                  'assets/images/icons/home.png',
-                  fit: BoxFit.contain,
-                ),
-              )),
+            child: Image.asset(
+              'assets/images/icons/pet.png',
+              fit: BoxFit.contain,
+            ),
+          )),
           TabItem(
               icon: Container(
             child: Image.asset(
@@ -48,13 +47,7 @@ class Wrapper extends StatelessWidget {
               fit: BoxFit.contain,
             ),
           )),
-          TabItem(
-              icon: Container(
-            child: Image.asset(
-              'assets/images/icons/pet.png',
-              fit: BoxFit.contain,
-            ),
-          )),
+          
           TabItem(
               icon: Container(
             child: Image.asset(

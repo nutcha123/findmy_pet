@@ -45,13 +45,11 @@ class PetListTile extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text('AGE : ${pet.age}',
-                    style: TextStyle(
-                      fontSize: 16,
-                    )),
+
+              Row(
+                children: [Expanded(child: Text('Age',style: TextStyle(fontWeight: FontWeight.w600),)),Text("${pet.age}")],
               ),
+             
               SizedBox(
                 height: 25,
               ),
@@ -77,7 +75,7 @@ class PetListTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${pet.type}'),
+                      Text('${pet.type}',style: TextStyle(fontWeight: FontWeight.w600),),
                       Text('${pet.breed}'),
                       Text('${pet.personalize}'),
                     ],

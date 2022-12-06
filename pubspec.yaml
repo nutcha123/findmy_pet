@@ -30,27 +30,29 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
-  dart_jsonwebtoken: ^2.4.2
+  cupertino_icons: ^1.0.5
+  
   qr_flutter: ^4.0.0
   get: ^4.6.5
   ionicons: ^0.2.1
-  convex_bottom_bar: ^3.0.0
+  convex_bottom_bar: ^3.1.0+1
   shared_preferences: ^2.0.15
-  responsive_sizer: ^3.1.0
-  firebase_core: ^1.22.0
-  firebase_auth: ^3.8.0
-  cloud_firestore: ^3.4.9
+  responsive_sizer: ^3.1.1
+  firebase_core: ^2.1.1
+  firebase_auth: ^4.1.1
+  cloud_firestore: ^4.0.4
   uuid: ^3.0.6
   flutter_spinkit: ^5.1.0
   google_fonts: ^3.0.1
-  flex_color_scheme: ^5.1.0
+  flex_color_scheme: ^6.0.1
   flutter_easyloading: ^3.0.5
   jwt_decode: ^0.3.1
-  firebase_storage: ^10.3.11
+  firebase_storage: ^11.0.4
   image_picker: ^0.8.6
-  cached_network_image: ^3.2.1
+  cached_network_image: ^3.2.2
   qr_code_scanner: ^1.0.1
+  dart_jsonwebtoken: 2.4.2
+  age_calculator: ^1.0.0
   
 
 dev_dependencies:

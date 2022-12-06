@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+// import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,7 +13,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:project/components/dialog/custom_dialog.dart';
 import 'package:project/components/widget/custom_button.dart';
 import 'package:project/model/pet.dart';
-import 'package:project/screens/result/result_page.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,6 +22,19 @@ class MyPetController extends GetxController {
   RxList<Pet> petReactiveList = RxList<Pet>([]);
 
   RxString currentImagePath = RxString('');
+
+
+  findUserByUid(String uid) async {
+    try {
+      final res = await FirebaseFirestore.instance.collection('Users').where('uid',isEqualTo: uid).get();
+    return res.docs.first.data();
+    }
+    catch(err) {
+
+      print(err);
+    }
+
+  }
 
   setLostStatus(bool status, {required String id}) async {
     final SharedPreferences sharedPreferences =

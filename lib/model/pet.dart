@@ -1,7 +1,7 @@
 class Pet {
   String? petId;
   String? name;
-  int? age;
+  String? age;
   String? breed;
   String? type;
   String? imageUrl;
